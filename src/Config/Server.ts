@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express, { Express } from 'express'
 import { connect } from 'mongoose';
+import cors from 'cors';
 import routes from '../Routes';
 
 const mongo_host = process.env.DB_HOST;
@@ -12,6 +13,10 @@ const port = process.env.PORT;
 
 export const appConfig = async (app: Express) => {
     await connect(`mongodb://${mongo_host}:${mongo_port}/${mongo_name}`)
+
+    app.use(cors({
+        origin : "http://localhost:5173"
+    }))
 
     app.use(express.json())
     app.use(routes)
