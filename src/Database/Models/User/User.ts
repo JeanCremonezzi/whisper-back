@@ -6,6 +6,6 @@ const userSchema = new Schema<IUser>({
     email: { type: String, required: true},
     password: { type: String, required: true},
     tag: { type: String, required: true}
-});
+}, { versionKey: false });
 
 export const User = model<IUser>('User', userSchema);

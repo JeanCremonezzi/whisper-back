@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
 import { User } from "./Database/Models/User/User";
-import { Encode } from "./Utils/HashPassword";
+import { Encode, Decode } from "./Utils/HashPassword";
 import ShortUniqueId from "short-unique-id";
+import jwt from 'jsonwebtoken';
 
 const uid = new ShortUniqueId({ length: 4, dictionary: 'alphanum_upper' });
 
@@ -24,6 +25,27 @@ routes.post('/user', async (req: Request, res: Response) => {
     }).save()
 
     res.send("Usuário foi cadastrado!")
+})
+
+routes.post('/user/signin', async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    const userExists = await User.findOne({ email });
+
+    if (!userExists || !Decode(password, userExists.password)) {
+        res.status(404).send("Email e/ou senha inválidos!");
+        return
+    }
+    
+    const token = jwt.sign({
+        username: userExists.username,
+        tag: userExists.tag,
+        email: userExists.email
+    }, process.env.JWT_SECRET!);
+
+    res.cookie("user_token", token, {
+        httpOnly: false
+    }).send("Login realizado!")
 })
 
 export default routes;
