@@ -37,15 +37,19 @@ routes.post('/user/signin', async (req: Request, res: Response) => {
         return
     }
     
-    const token = jwt.sign({
-        username: userExists.username,
-        tag: userExists.tag,
-        email: userExists.email
-    }, process.env.JWT_SECRET!);
+    const token = jwt.sign(userExists.id, process.env.JWT_SECRET!);
 
     res.cookie("user_token", token, {
         httpOnly: false
-    }).send("Login realizado!")
+    }).json({
+        username: userExists.username,
+        email: userExists.email,
+        tag: userExists.tag
+    })
+})
+
+routes.get('/users/search', async (req: Request, res: Response) => {
+    //TODO
 })
 
 export default routes;

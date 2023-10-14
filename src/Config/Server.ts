@@ -15,7 +15,8 @@ export const appConfig = async (app: Express) => {
     await connect(`mongodb://${mongo_host}:${mongo_port}/${mongo_name}`)
 
     app.use(cors({
-        origin : "http://localhost:5173"
+        origin : "http://localhost:5173",
+        credentials: true
     }))
 
     app.use(express.json())
