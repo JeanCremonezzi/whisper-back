@@ -49,9 +49,10 @@ routes.post('/user/signin', async (req: Request, res: Response) => {
 })
 
 routes.get('/users/search', async (req: Request, res: Response) => {
-    const { username, tag } = req.query
+    const username = req.query.username?.toString().toLowerCase()
+    const tag = req.query.tag?.toString().toUpperCase()
 
-    const filter = tag ? { username, tag } : { username }
+    const filter = tag ? { username: username, tag } : { username }
 
     const usersFound = await User.find(filter).select(["username", "tag", "-_id"])
     
