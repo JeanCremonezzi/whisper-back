@@ -49,7 +49,13 @@ routes.post('/user/signin', async (req: Request, res: Response) => {
 })
 
 routes.get('/users/search', async (req: Request, res: Response) => {
-    //TODO
+    const { username, tag } = req.query
+
+    const filter = tag ? { username, tag } : { username }
+
+    const usersFound = await User.find(filter).select(["username", "tag", "-_id"])
+    
+    res.send(usersFound)
 })
 
 export default routes;

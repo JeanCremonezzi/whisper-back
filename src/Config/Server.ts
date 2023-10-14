@@ -9,20 +9,19 @@ const mongo_port = process.env.DB_PORT;
 const mongo_name = process.env.DB_NAME;
 
 require('dotenv').config()
-const port = process.env.PORT;
 
 export const appConfig = async (app: Express) => {
     await connect(`mongodb://${mongo_host}:${mongo_port}/${mongo_name}`)
 
     app.use(cors({
-        origin : "http://localhost:5173",
+        origin : process.env.CLIENT_ORIGIN,
         credentials: true
     }))
 
     app.use(express.json())
     app.use(routes)
 
-    app.listen(port, () => {
-        console.log(`\nApp running on port ${port}\n`)
+    app.listen(process.env.PORT, () => {
+        console.log(`\nApp running on port ${process.env.PORT}\n`)
     })
 } 
