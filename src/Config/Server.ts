@@ -3,6 +3,7 @@ import express, { Express } from 'express'
 import { connect } from 'mongoose';
 import cors from 'cors';
 import routes from '../Routes';
+import cookieParser from 'cookie-parser';
 
 const mongo_host = process.env.DB_HOST;
 const mongo_port = process.env.DB_PORT;
@@ -19,6 +20,7 @@ export const appConfig = async (app: Express) => {
     }))
 
     app.use(express.json())
+    app.use(cookieParser())
     app.use(routes)
 
     app.listen(process.env.PORT, () => {

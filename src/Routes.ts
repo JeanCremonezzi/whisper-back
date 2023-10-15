@@ -54,8 +54,10 @@ routes.get('/users/search', async (req: Request, res: Response) => {
 
     const filter = tag ? { username: username, tag } : { username }
 
-    const usersFound = await User.find(filter).select(["username", "tag", "-_id"])
-    
+    const token = jwt.verify(req.cookies.user_token, process.env.JWT_SECRET!);
+
+    const usersFound = await User.find({...filter, _id: { $ne: token }}).select(["username", "tag", "-_id"])
+
     res.send(usersFound)
 })
 
