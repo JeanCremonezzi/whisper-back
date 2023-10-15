@@ -3,6 +3,7 @@ import { User } from "./Database/Models/User/User";
 import { Encode, Decode } from "./Utils/HashPassword";
 import ShortUniqueId from "short-unique-id";
 import jwt from 'jsonwebtoken';
+import { ValidateCookie } from "./Middleware/CookieMiddleware";
 
 const uid = new ShortUniqueId({ length: 4, dictionary: 'alphanum_upper' });
 
@@ -48,17 +49,19 @@ routes.post('/user/signin', async (req: Request, res: Response) => {
     })
 })
 
-routes.get('/users/search', async (req: Request, res: Response) => {
+routes.get('/users/search', ValidateCookie, async (req: Request, res: Response) => {
     const username = req.query.username?.toString().toLowerCase()
     const tag = req.query.tag?.toString().toUpperCase()
+    const userID = req.body.userData.id
 
-    const filter = tag ? { username: username, tag } : { username }
+    const filter = tag ? { username: username, tag } : { username }  
 
-    const token = jwt.verify(req.cookies.user_token, process.env.JWT_SECRET!);
-
-    const usersFound = await User.find({...filter, _id: { $ne: token }}).select(["username", "tag", "-_id"])
+    const usersFound = await User.find({...filter, _id: { $ne: userID }}).select(["username", "tag", "-_id"])
 
     res.send(usersFound)
 })
+
+// TODO 
+// CRIAR CONTROLLERS
 
 export default routes;
