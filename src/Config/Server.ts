@@ -13,7 +13,7 @@ export const appConfig = async (app: Express) => {
     await connect(`${process.env.DB_URI}`)
     
     app.use(cors({
-        origin : ['http://localhost:5173'],
+        origin : ['http://localhost:5173', 'https://whisper-front.onrender.com'],
         credentials: true
     }))
 
