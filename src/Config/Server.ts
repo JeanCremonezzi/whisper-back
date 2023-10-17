@@ -13,7 +13,7 @@ export const appConfig = async (app: Express) => {
     await connect(`${process.env.DB_URI}`)
     
     app.use(cors({
-        origin : '*',
+        origin : ['http://localhost:5173'],
         credentials: true
     }))
 
