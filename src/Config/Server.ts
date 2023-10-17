@@ -7,17 +7,13 @@ import cookieParser from 'cookie-parser';
 import { Server } from "socket.io";
 import { createServer } from 'http';
 
-const mongo_host = process.env.DB_HOST;
-const mongo_port = process.env.DB_PORT;
-const mongo_name = process.env.DB_NAME;
-
 require('dotenv').config()
 
 export const appConfig = async (app: Express) => {
-    await connect(`mongodb://${mongo_host}:${mongo_port}/${mongo_name}`)
+    await connect(`${process.env.DB_URI}`)
     
     app.use(cors({
-        origin : process.env.CLIENT_ORIGIN,
+        origin : '*',
         credentials: true
     }))
 
