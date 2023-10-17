@@ -7,7 +7,7 @@ import jwt from 'jsonwebtoken';
 const uid = new ShortUniqueId({ length: 4, dictionary: 'alphanum_upper' });
 
 export const UserRegisterController = async (req: Request, res: Response) => {
-    const { username, email, password, tag } = req.body;
+    const { username, email, password } = req.body;
 
     const emailExists = await User.findOne({ email});
     if (emailExists) {
