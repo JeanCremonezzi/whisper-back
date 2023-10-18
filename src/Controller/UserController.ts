@@ -53,7 +53,7 @@ export const UserSearchController = async (req: Request, res: Response) => {
 
     const filter = tag ? { username: username, tag } : { username }  
 
-    const usersFound = await User.find({...filter, _id: { $ne: userID }}).select(["username", "tag", "-_id"])
+    const usersFound = await User.find({...filter, _id: { $ne: userID }}).select(["username", "tag", "email", "-_id"])
 
     res.send(usersFound)
 }
