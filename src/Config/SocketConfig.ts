@@ -24,9 +24,7 @@ export const SocketConfig = (app: Express) => {
         next()
     });
 
-    io.on("connection", (socket) => {
-        console.log(rooms);
-              
+    io.on("connection", (socket) => {              
         rooms.set(socket.data.user.email, socket.id)
 
         socket.on("message", ({message, to}) => {
