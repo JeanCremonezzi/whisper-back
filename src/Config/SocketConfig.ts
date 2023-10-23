@@ -2,6 +2,7 @@ import { Express } from 'express'
 import { createServer } from "http";
 import { Server } from "socket.io";
 import { User } from "../Database/Models/User/User";
+import { Chat } from '../Database/Models/Chat/Chat';
 
 export const SocketConfig = (app: Express) => {
     const rooms = new Map<string, string>()
@@ -15,28 +16,41 @@ export const SocketConfig = (app: Express) => {
     });
 
     io.use(async (socket, next) => {
-        if (!socket.handshake.auth.user || !await User.findOne({ email: socket.handshake.auth.user.email })) {
+        const user = await User.findOne({ email: socket.handshake.auth.user.email }).select("-password")
+
+        if (!socket.handshake.auth.user || !user) {
             next(new Error("Invalid User"));
             return
         }
         
-        socket.data.user = socket.handshake.auth.user
+        socket.data.user = user
         next()
     });
 
     io.on("connection", (socket) => {              
         rooms.set(socket.data.user.email, socket.id)
 
-        socket.on("message", ({message, to}) => {
+        socket.on("message", async ({message, to}) => {
+            const users = await User.find({ email: { $in: [to, socket.data.user.email] } }).select("-password")
+            let chat = await Chat.findOne({ participants: users })
+
+            if (!chat) await new Chat({
+                participants: users
+            }).save().then(newChat => chat = newChat)
+
+            chat!.messages.push({
+                message,
+                from: socket.data.user
+            })
+
+            chat!.save()
+
             if (rooms.has(to)) {
-                const toRoom = rooms.get(to)!
-                socket.to(toRoom).emit("message", {
+                socket.to(rooms.get(to)!).emit("message", {
                     message,
                     from: socket.data.user.email
                 })
             }
-
-            // TODO - PERSISTIR MENSAGEM
         })
         
         socket.on('disconnect', () => {

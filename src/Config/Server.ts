@@ -4,9 +4,6 @@ import { connect } from 'mongoose';
 import cors from 'cors';
 import routes from '../Routes';
 import cookieParser from 'cookie-parser';
-import { Server } from "socket.io";
-import { createServer } from 'http';
-import { User } from '../Database/Models/User/User';
 import { SocketConfig } from './SocketConfig';
 
 require('dotenv').config()

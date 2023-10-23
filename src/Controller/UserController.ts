@@ -9,7 +9,7 @@ const uid = new ShortUniqueId({ length: 4, dictionary: 'alphanum_upper' });
 export const UserRegisterController = async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
 
-    const emailExists = await User.findOne({ email});
+    const emailExists = await User.findOne({ email });
     if (emailExists) {
         res.status(409).send("Email já cadastrado!")
         return
