@@ -48,7 +48,11 @@ export const SocketConfig = (app: Express) => {
             if (rooms.has(to)) {
                 socket.to(rooms.get(to)!).emit("message", {
                     message,
-                    from: socket.data.user.email
+                    from: {
+                        email: socket.data.user.email,
+                        tag: socket.data.user.tag,
+                        username: socket.data.user.username
+                    }
                 })
             }
         })
